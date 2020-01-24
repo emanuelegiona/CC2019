@@ -65,12 +65,23 @@ class Generator:
         :return: None
         """
 
-        print("Thread started")
         prefix = "{name}: ".format(name=self.__name) if self.__name is not None else ""
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as sock_handle:
-            sock_handle.connect((self.__host, self.__port))
+            print("Waiting for connection...")
+            connected = False
+            aborted = False
+            while not connected:
+                try:
+                    sock_handle.connect((self.__host, self.__port))
+                    connected = True
+                    print("Connected.")
+                except ConnectionRefusedError:
+                    connected = False
+                except ConnectionResetError:
+                    aborted = True
+                    break
 
-            while self.__run.is_set():
+            while not aborted and self.__run.is_set():
                 # choose a random word
                 word = random.choice(WORD_SET)
 
@@ -80,7 +91,8 @@ class Generator:
 
                 # wait for the given time interval
                 sleep(self.__time_interval)
-        print("Thread ended")
+
+        print("Connection closed." if not aborted else "Aborted.")
 
     def start(self) -> None:
         """
