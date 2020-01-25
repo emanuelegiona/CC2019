@@ -3,37 +3,43 @@ Simulates dynamic application load over time for testing purposes.
 """
 
 import sys
-from src.word_generator import generate_words
+from os.path import exists
+from threading import Thread
+from typing import List
+
+from code.file_generator import generate_file
+
+
+def spawn_threads(lengths: List[int], tmp_dir: str, tgt_dir: str) -> None:
+    threads = [Thread(target=generate_file,
+                      kwargs={"length": file_len,
+                              "tmp_dir": tmp_dir,
+                              "tgt_dir": tgt_dir}
+                      )
+               for file_len in range(0, len(lengths))]
+
+    print("Spawning threads...")
+    for thread in threads:
+        thread.start()
+
+    print("Waiting for execution...")
+    for thread in threads:
+        thread.join()
+
+    print("Execution completed.")
 
 
 if __name__ == "__main__":
     if len(sys.argv) != 3:
-        print("Usage: benchmark.py <hostname> <port>", file=sys.stderr)
+        print("Usage: benchmark.py <tmp_dir> <tgt_dir>", file=sys.stderr)
         sys.exit(-1)
 
-    host = sys.argv[1]
-    port = int(sys.argv[2])
+    tmp = sys.argv[1]
+    tgt = sys.argv[2]
 
-    # 10 words per second, for 2 minutes
-    generate_words(host=host,
-                   port=port,
-                   time_interval=0.1,
-                   duration=120)
+    assert exists(tmp), "Temporary directory does not exist"
+    assert exists(tgt), "Target directory does not exist"
 
-    # 500 words per second, for 5 minutes --> scaling up should occur here
-    generate_words(host=host,
-                   port=port,
-                   time_interval=0.002,
-                   duration=300)
-
-    # 100 words per second, for 2 minutes --> scaling down should occur here
-    generate_words(host=host,
-                   port=port,
-                   time_interval=0.01,
-                   duration=120)
-
-    # 10 words per second, for 2 minutes
-    generate_words(host=host,
-                   port=port,
-                   time_interval=0.1,
-                   duration=120)
+    spawn_threads(lengths=[1],
+                  tmp_dir=tmp,
+                  tgt_dir=tgt)
