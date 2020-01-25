@@ -133,3 +133,7 @@ dmypy.json
 
 # Server test
 src/server.py
+
+# tmp and data directories
+tmp/
+data/
