@@ -11,7 +11,7 @@ provide a **benchmarking tool**, and again its **elasticity**.
 ## Implementation details
 
 [Google Cloud Platform][gcp] (and in particular its [Dataproc][dataproc] service) has been used as
-cloud provider, due to the ease of cluster and software setup, while the [Network Word Count][word_count]
+cloud provider, due to the ease of cluster and software setup, while the [HDSF Word Count][word_count]
 example from the Apache Spark repository has served as the distributed application taking advantage
 of the streaming capabilities of Apache Spark.
 
@@ -24,12 +24,18 @@ Full details available in the [PDF report][report].
 ## Directory structure
 
 ```
-- src                           # source file directory
-    |__ benchmark.py            # simulates dynamic application load over time for testing purposes
-    |__ network_wordcount.py    # streaming Word Count example from Apache Spark
-    |__ word_generator.py       # periodically generates words to send over a TCP socket
-- README.md                     # this file
-- anonymous_report.pdf          # PDF report
+- config
+    |__ autoscaling_policy.yaml     # GCP autoscaling policy
+- data                              # target directory containing files to be processed
+    |__ ...
+- src                               # source file directory
+    |__ benchmark.py                # simulates dynamic application load over time for testing purposes
+    |__ file_generator.py           # creates a file then moves it into the target directory
+    |__ hdfs_wordcount.py           # streaming Word Count example from Apache Spark
+- tmp                               # temporary directory for file creation
+    |__ ...
+- README.md                         # this file
+- anonymous_report.pdf              # PDF report
 ```
 
 For more Apache Spark examples: [Spark website][spark_examples] | [GitHub][spark_github].
@@ -37,7 +43,7 @@ For more Apache Spark examples: [Spark website][spark_examples] | [GitHub][spark
 [course]: https://sites.google.com/di.uniroma1.it/cloudcomputingcourse/
 [gcp]: https://cloud.google.com/
 [dataproc]: https://cloud.google.com/dataproc/
-[word_count]: https://github.com/apache/spark/blob/master/examples/src/main/python/streaming/network_wordcount.py
+[word_count]: https://github.com/apache/spark/blob/master/examples/src/main/python/streaming/hdfs_wordcount.py
 [spark_examples]: https://spark.apache.org/examples.html
 [spark_github]: https://github.com/apache/spark/tree/master/examples/src/main
 [report]: ./anonymous_report.pdf
