@@ -33,13 +33,14 @@ laoreet, euismod sem sed, porta urna. Orci varius natoque penatibus."""\
     .replace("\n", "")
 
 
-def generate_file(length: int = 1, tmp_dir: str = "tmp/", tgt_dir: str = "data/") -> None:
+def generate_file(length: int = 1, tmp_dir: str = "tmp/", tgt_dir: str = "data/", quiet: bool = False) -> None:
     """
     Creates a an arbitrary length file in a temporary directory, then moves it to the target directory.
 
     :param length: number of repetitions of TEXT to be contained in the generated file
     :param tmp_dir: path to the temporary directory
     :param tgt_dir: path to the target directory
+    :param quiet: if True, no output to the standard output
     """
 
     timestamp = str(time()).replace(".", "")
@@ -49,7 +50,9 @@ def generate_file(length: int = 1, tmp_dir: str = "tmp/", tgt_dir: str = "data/"
 
     # file creation
     try:
-        print("Creating file...")
+        if not quiet:
+            print("Creating file...")
+
         with open(tmp_path, "w", encoding="utf-8"):
             pass
 
@@ -58,18 +61,29 @@ def generate_file(length: int = 1, tmp_dir: str = "tmp/", tgt_dir: str = "data/"
                 file.write(TEXT)
                 file.write(" ")
                 file.flush()
-        print("Done.")
-    except RuntimeError:
-        print("Error during file creation.")
+
+        if not quiet:
+            print("Done.")
+
+    except Exception as e:
+        if not quiet:
+            print("Error during file creation ({msg}).".format(msg=str(e)))
+
         return
 
     # file moving
     try:
-        print("Moving file...")
+        if not quiet:
+            print("Moving file...")
         move(tmp_path, tgt_path)
-        print("Done.")
-    except RuntimeError:
-        print("Error during file moving.")
+
+        if not quiet:
+            print("Done.")
+
+    except Exception as e:
+        if not quiet:
+            print("Error during file moving ({msg}).".format(msg=str(e)))
+
         return
 
 
