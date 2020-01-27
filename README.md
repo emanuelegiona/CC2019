@@ -32,6 +32,7 @@ Full details available in the [PDF report][report].
     |__ benchmark.py                # simulates dynamic application load over time for testing purposes
     |__ file_generator.py           # creates a file then moves it into the target directory
     |__ hdfs_wordcount.py           # streaming Word Count example from Apache Spark
+    |__ instance_logger.sh          # BASH script to monitor GCP VM instances over time
 - tmp                               # temporary directory for file creation
     |__ ...
 - README.md                         # this file
