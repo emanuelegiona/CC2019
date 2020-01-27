@@ -29,7 +29,7 @@ from __future__ import print_function
 
 import sys
 
-from pyspark import SparkContext
+from pyspark import SparkContext, SparkConf
 from pyspark.streaming import StreamingContext
 
 if __name__ == "__main__":
@@ -37,7 +37,11 @@ if __name__ == "__main__":
         print("Usage: hdfs_wordcount.py <directory>", file=sys.stderr)
         sys.exit(-1)
 
-    sc = SparkContext(appName="PythonStreamingHDFSWordCount")
+    conf = SparkConf()\
+        .set("spark.shuffle.service.enabled", "true")\
+        .set("spark.dynamicAllocation.enabled", "true")\
+        .set("spark.dynamicAllocation.maxExecutors", "3")
+    sc = SparkContext(appName="PythonStreamingHDFSWordCount", conf=conf)
     ssc = StreamingContext(sc, 5)
 
     lines = ssc.textFileStream(sys.argv[1])
