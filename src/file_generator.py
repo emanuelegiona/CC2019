@@ -1,5 +1,5 @@
 """
-Periodically generates words to send over a TCP socket.
+Generates a file with the given length, in the given directories.
 """
 
 import sys
